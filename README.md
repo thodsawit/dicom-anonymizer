@@ -9,25 +9,30 @@
 - allow input image directory to have subdirectories.
 
 ### How to run
+- run ```anonymizer.py``` in command line to de-identify images:\
 ```python dicomanonymizer/anonymizer.py <input directory> <output directory>```\
 where:\
 ```<input directory>``` is the directory containing input images to be de-identified. Subdirectories are allowed.\
 ```<output directory>``` is the target directory to which de-identified images and UID encodings will be outputted.\
+- After de-identification is completed, de-identified images can be checked by running ```view_DICOM.py```\
+```python dicomanonymizer/view_DICOM.py <image directory>```\
+where:\
+```<image directory>``` is the directory containing de-identified images.
 
 ### Environments
 - Environment can be created from the ```environement.yml``` file.\
 ```conda env create -f environment.yml```\
 ```conda activate <myenv>```
 
-### Output
+### Outputs
 The following folders will be created in the output directory:
-- 'images' folder contains de-identified images
-- 'master_encode' folder contains csv files mapping original UIDs and encrypted UIDs
+- 'images' folder will contain de-identified images.
+- 'master_encode' folder will contain csv files mapping original UIDs and encrypted UIDs.
 
 ### Example image before and after de-identification
 ![](figure_deidentification.png)
 	
-## original documentation
+## Original documentation
 Python package to anonymize DICOM files.
 The anonymization answer to the standard . More information about dicom fields for anonymization can be found [here](http://dicom.nema.org/dicom/2013/output/chtml/part15/chapter_E.html#table_E.1-1).
 
