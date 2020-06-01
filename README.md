@@ -9,7 +9,7 @@
 - allow input image directory to have subdirectories.
 
 ### How to run
-- python dicomanonymizer/anonymizer.py <directory containing input images> <target directory for output images and csv files>
+```python dicomanonymizer/anonymizer.py <directory containing input images> <target directory for output images and csv files>```
 
 ### Output
 The following folders will be created in the output directory:
