@@ -1,5 +1,33 @@
 # DicomAnonymizer
 
+***forked from KitwareMedical/dicom-anonymizer***
+
+### Changes in this version
+- support de-identification of burned-in patient information in ultrasound images.
+- encrypt UIDs by sha256 standard.
+- create csv file mapping original UIDs and encrypted UIDs
+- allow input image directory to have subdirectories.
+
+### How to run
+```python dicomanonymizer/anonymizer.py <input directory> <output directory>```\
+where:\
+```<input directory>``` is the directory containing input images to be de-identified. Subdirectories are allowed.\
+```<output directory>``` is the target directory to which de-identified images and UID encodings will be outputted.\
+
+### Environments
+- Environment can be created from the ```environement.yml``` file.\
+```conda env create -f environment.yml```\
+```conda activate <myenv>```
+
+### Output
+The following folders will be created in the output directory:
+- 'images' folder contains de-identified images
+- 'master_encode' folder contains csv files mapping original UIDs and encrypted UIDs
+
+### Example image before and after de-identification
+![](figure_deidentification.png)
+	
+## original documentation
 Python package to anonymize DICOM files.
 The anonymization answer to the standard . More information about dicom fields for anonymization can be found [here](http://dicom.nema.org/dicom/2013/output/chtml/part15/chapter_E.html#table_E.1-1).
 
