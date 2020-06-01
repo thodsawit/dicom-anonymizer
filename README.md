@@ -20,7 +20,7 @@ where:\
 ```<image directory>``` is the directory containing de-identified images.
 
 ### Environments
-- Environment can be created from the ```environement.yml``` file.\
+- Environment can be created from the ```environment.yml``` file.\
 ```conda env create -f environment.yml```\
 ```conda activate <myenv>```
 
