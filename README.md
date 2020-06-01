@@ -3,7 +3,7 @@
 Python package to anonymize DICOM files.
 The anonymization answer to the standard . More information about dicom fields for anonymization can be found [here](http://dicom.nema.org/dicom/2013/output/chtml/part15/chapter_E.html#table_E.1-1).
 
-The default behaviour of this package is to anonymize DICOM fields referenced in [dicomfields](dicomanonymizer/dicomfields.py).
+The default behaviour of this package is to anonymize DICOM fields referenced in [dicomfields](dicomanonymizer/utils/dicomfields.py).
 
 Dicom fields are separated into different groups. Each groups will be anonymized in a different way.
 

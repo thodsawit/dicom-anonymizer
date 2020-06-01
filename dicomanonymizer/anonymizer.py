@@ -1,14 +1,12 @@
 import argparse
 import ast
-import json
 import os
-import re
 import tqdm
 from os.path import join, exists
 import json
 
 
-from .simpledicomanonymizer import *
+from utils.simpledicomanonymizer import *
 
 
 def anonymize(inputPath, outputPath, anonymizationActions):
