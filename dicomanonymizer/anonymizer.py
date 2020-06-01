@@ -113,3 +113,4 @@ def main(definedActionMap = {}):
 
     # Launch the anonymization
     anonymize(InputPath, OutputPath, newAnonymizationActions)
+

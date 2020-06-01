@@ -4,7 +4,7 @@ import sys
 
 from random import randint
 
-from .dicomfields import *
+#from .dicomfields import *
 
 
 dictionary = {}
