@@ -17,9 +17,9 @@ The following folders will be created in the output directory:
 - 'encodings' folder contains csv files mapping original UIDs and encrypted UIDs
 
 ### Example image before and after de-identification
-![](/Users/thodsawit/Google Drive/Stanford_LIRADS_project/figure_deidentification.png)
+![](figure_deidentification.png)
 	
-***original documentation***
+***original documentation***\
 Python package to anonymize DICOM files.
 The anonymization answer to the standard . More information about dicom fields for anonymization can be found [here](http://dicom.nema.org/dicom/2013/output/chtml/part15/chapter_E.html#table_E.1-1).
 
