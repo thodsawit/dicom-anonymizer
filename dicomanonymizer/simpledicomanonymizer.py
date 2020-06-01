@@ -1,21 +1,45 @@
 import re
 import pydicom
 import sys
+import hashlib
+from os.path import dirname, join
 
 from random import randint
 
-#from .dicomfields import *
+from .dicomfields import *
+
+
+encodings = dict()
+#structure: {element_keyword: {original_value: encrypted_value}}
 
 
 dictionary = {}
 
 # Default anonymization functions
 
+
+def encrypt_string(hash_string):
+    sha_signature = hashlib.sha256(hash_string.encode()).hexdigest()
+    return sha_signature
+
+
 def replaceElementUID(element):
+    """
     if element.value not in dictionary:
         new_chars = [str(randint(0, 9)) if char.isalnum() else char for char in element.value]
         dictionary[element.value] = ''.join(new_chars)
     element.value = dictionary.get(element.value)
+    """
+    #modified implementation --> encrypt using sha256 standard
+    encrypted_value = encrypt_string(element.value)
+
+    #add to encodings dictionary --> will be written to csv later
+    element_keyword = element.keyword
+    if element_keyword not in encodings:
+        encodings[element_keyword] = dict()
+    encodings[element_keyword][element.value] = encrypted_value
+
+    element.value = encrypted_value
 
 
 def replaceElementDate(element):
@@ -233,5 +257,52 @@ def anonymizeDICOMFile(inFile, outFile, dictionary = ''):
     # X - Private tags = (0xgggg, oxeeee) where 0xgggg is odd
     dataset.remove_private_tags()
 
+
+    #black out burned-in patient information
+    #use UltrasoundRegion dataElements to specify areas to be blacked out
+    dataset.decompress()
+    # read image data
+    img = dataset.pixel_array
+    h = img.shape[0]
+    w = img.shape[1]
+
+    try:
+        ultrasound_regions = dataset.SequenceOfUltrasoundRegions
+    except:
+        ultrasound_regions = []
+
+    if len(ultrasound_regions) == 0:
+        #default --> pad top 10% of image with black banner
+        pad_space = int(0.1 * h)
+        img[:pad_space] = 0
+    else:
+        #turn all area outside ultrasound pane into black color
+        x0_union = w
+        x1_union = 0
+        y0_union = h
+        y1_union = 0
+        #find single box that covers all regions
+        for region in ultrasound_regions:
+            x0_union = min(x0_union, region.RegionLocationMinX0)
+            x1_union = max(x1_union, region.RegionLocationMaxX1)
+            y0_union = min(y0_union, region.RegionLocationMinY0)
+            y1_union = max(y1_union, region.RegionLocationMaxY1)
+        x0 = max(x0_union, 0)
+        x1 = min(x1_union, w)
+        y0 = max(y0_union, 0)
+        y1 = min(y1_union, h)
+        img[:, :x0] = 0
+        img[:, x1:] = 0
+        img[:y0] = 0
+        img[y1:] = 0
+
+    dataset.PixelData = img.tobytes()
+
+
+
     # Store modified image
-    dataset.save_as(outFile)
+    # set output filename as encrypted SOPInstanceUID
+    out_filename = encrypt_string(dataset.SOPInstanceUID)
+    out_filename = out_filename[:int(len(out_filename)/2)]+".dcm"
+    outdir = dirname(outFile)
+    dataset.save_as(join(outdir, out_filename))

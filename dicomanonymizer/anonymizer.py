@@ -4,37 +4,36 @@ import json
 import os
 import re
 import tqdm
+from os.path import join, exists
+import json
+
 
 from .simpledicomanonymizer import *
 
+
 def anonymize(inputPath, outputPath, anonymizationActions):
     # Get input arguments
-    InputFolder = ''
-    OutputFolder = ''
+    if inputPath == '' or outputPath == '':
+        raise Exception('No input_folder or output_folder specified')
+        quit()
 
-    if os.path.isdir(inputPath):
-        InputFolder = inputPath
-
-    if os.path.isdir(outputPath):
-        OutputFolder = outputPath
-        if InputFolder == '':
-            outputPath = OutputFolder + os.path.basename(inputPath)
-
-    if InputFolder != '' and OutputFolder == '':
-        print('Error, please set an output folder path with an input folder path')
-        sys.exit()
+    #output_folder for images
+    OutputFolder = join(outputPath, 'images')
+    if not exists(OutputFolder):
+        os.mkdir(OutputFolder)
 
     # Generate list of input file if a folder has been set
     inputFilesList = []
     outputFilesList = []
-    if InputFolder == '':
-        inputFilesList.append(inputPath)
-        outputFilesList.append(outputPath)
-    else:
-        files = os.listdir(InputFolder)
-        for fileName in files:
-            inputFilesList.append(InputFolder + '/' + fileName)
-            outputFilesList.append(OutputFolder + '/' + fileName)
+
+    for root, dirs, files in os.walk(inputPath):
+        for my_file in files:
+            if my_file.endswith(".dcm"):
+                filename = my_file.split("/")[-1]
+                file_path = os.path.join(root, filename)
+                inputFilesList.append(file_path)
+                #all output files will be pooled in a single folder without subdirectories
+                outputFilesList.append(OutputFolder + '/' + filename)
 
     progressBar = tqdm.tqdm(total=len(inputFilesList))
     for cpt in range(len(inputFilesList)):
@@ -42,6 +41,18 @@ def anonymize(inputPath, outputPath, anonymizationActions):
         progressBar.update(1)
 
     progressBar.close()
+
+
+    #write encodings to csv file
+    out_csv_folder = join(outputPath, 'master_encode')
+    if not exists(out_csv_folder):
+        os.mkdir(out_csv_folder)
+    for keyword, encoding_pairs in encodings.items():
+        with open(join(out_csv_folder, keyword+'.csv'), 'w') as wr:
+            for original, encrypted in encoding_pairs.items():
+                wr.write(','.join([original, encrypted]))
+                wr.write('\n')
+
 
 
 def generateActionsDictionary(mapActionTag, definedActionMap = {}):
@@ -114,3 +125,7 @@ def main(definedActionMap = {}):
     # Launch the anonymization
     anonymize(InputPath, OutputPath, newAnonymizationActions)
 
+
+
+if __name__ == '__main__':
+    main()
