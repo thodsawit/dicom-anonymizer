@@ -35,7 +35,8 @@ def anonymize(inputPath, outputPath, anonymizationActions):
 
     progressBar = tqdm.tqdm(total=len(inputFilesList))
     for cpt in range(len(inputFilesList)):
-        anonymizeDICOMFile(inputFilesList[cpt], outputFilesList[cpt], anonymizationActions)
+        anonymizeDICOMFile(inputFilesList[cpt], outputFilesList[cpt], dictionary=anonymizationActions,
+                           input_img_dir=inputPath, output_img_dir=OutputFolder)
         progressBar.update(1)
 
     progressBar.close()
