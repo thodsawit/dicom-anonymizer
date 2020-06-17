@@ -40,7 +40,10 @@ for f in files:
         elif 'YBR' in color_channel:
             img = cv2.cvtColor(ds.pixel_array, cv2.COLOR_YCrCb2RGB)
 
-        cv2.imshow('Press any key to continue.', img)
+        target_width = 600
+        target_height = int(img.shape[0] * (target_width/img.shape[1]))
+
+        cv2.imshow('Press any key to continue.', cv2.resize(img, (target_width, target_height)))
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 

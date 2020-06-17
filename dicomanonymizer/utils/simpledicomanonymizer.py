@@ -275,7 +275,7 @@ def anonymizeDICOMFile(inFile, outFile, dictionary = '', input_img_dir='', outpu
     if len(ultrasound_regions) == 0:
         #default --> pad top 10% of image with black banner
         pad_space = int(0.1 * h)
-        img[:pad_space] = 255
+        img[:pad_space] = 0
     else:
         #turn all area outside ultrasound pane into black color
         x0_union = w
@@ -292,10 +292,10 @@ def anonymizeDICOMFile(inFile, outFile, dictionary = '', input_img_dir='', outpu
         x1 = min(x1_union, w)
         y0 = max(y0_union, 0)
         y1 = min(y1_union, h)
-        img[:, :x0] = 100
-        img[:, x1:] = 100
-        img[:y0] = 100
-        img[y1:] = 100
+        img[:, :x0] = 0
+        img[:, x1:] = 0
+        img[:y0] = 0
+        img[y1:] = 0
 
     dataset.PixelData = img.tobytes()
 
@@ -312,7 +312,7 @@ def anonymizeDICOMFile(inFile, outFile, dictionary = '', input_img_dir='', outpu
     #no subdirectories
     dataset.save_as(join(outdir, out_filename))
     """
-    """
+
     #option 2
     #preserve the original input subdirectories and encode each subdirectory
     origin_subfolder = (dirname(inFile).replace(input_img_dir, "").replace('\\', '/').strip())[1:].split('/')
@@ -322,8 +322,8 @@ def anonymizeDICOMFile(inFile, outFile, dictionary = '', input_img_dir='', outpu
     if not os.path.isdir(outdir + '/' + encode_subfolder):
         os.makedirs(outdir + '/' + encode_subfolder)
     dataset.save_as(outdir + '/' + encode_subfolder + out_filename)
-    """
 
+    """
     #option 3
     #create new subdirectories based on DICOM SOP hierarchy
     #encoded StudyInstanceUID --> SeriesInstanceUID --> SOPInstanceUID
@@ -331,3 +331,4 @@ def anonymizeDICOMFile(inFile, outFile, dictionary = '', input_img_dir='', outpu
     if not os.path.isdir(dest_dir):
         os.makedirs(dest_dir)
     dataset.save_as(join(dest_dir, out_filename))
+    """
